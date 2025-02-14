@@ -121,6 +121,17 @@ void createReact(vector<string> arguments){
                     "plugins: [],"
                 "}";
             }
+            of.close();
+            of.open("./"+projectName+"/src/index.css");
+            if(!of){
+                cout  << "Error finding tailwind config" << endl;
+            }else{
+                of << 
+                "@tailwind base;"
+                "@tailwind components;"
+                "@tailwind utilities;";
+            }
+            of.close();
             break;
         }else if(lowerOp == 'n'){
             break;
