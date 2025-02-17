@@ -64,12 +64,24 @@ void help(vector<string> arguments){
     cout << "banao fileName" << "       --Create a new File" << endl;
     cout << "hatao fileName" << "       --Remove a file" << endl;
     cout << "bolo text" << "            --Similar usage to the echo command" << endl;
-    cout << "reactinit" << "            --Initialize a react project" << endl;
+    cout << "reactinit" << "            --Initialize a react project " << endl;
+    cout << "reactinit -t" << "         --Initialize a react project with tailwind preconfigured" << endl;
     cout << "exit" << "                 --Exit the cli" << endl;
     cout << endl << endl;
 }
 
 void createReact(vector<string> arguments){
+    char opt;
+
+    if(!arguments.size() == 0){
+        if(arguments[0] == "-t"){
+            opt = 'y';
+        }
+    }else{
+        opt = 'n';
+    }
+    
+
 
     unordered_map<int,string> projectArgs;
     projectArgs[1] = "-- --template react";
@@ -92,15 +104,9 @@ void createReact(vector<string> arguments){
     cout << executableString <<endl;
     system(executableString.c_str());
     
-    char lowerOp;
-
     while(true){
-        cout << "Do you want to initialise tailwindCSS ?" << endl;
-        cout << "(y/n) : " ;
-        char opt;
-        cin >> opt;
-        lowerOp = tolower(opt);
-        if(lowerOp == 'y'){
+        
+        if(opt == 'y'){
             string installCmd = "cd " + projectName + " && npm install -D tailwindcss@3 postcss autoprefixer";
             system(installCmd.c_str());
 
@@ -140,7 +146,7 @@ void createReact(vector<string> arguments){
             }
             of.close();
             break;
-        }else if(lowerOp == 'n'){
+        }else if(opt == 'n'){
             break;
         }else{
             cout << "Invalid command" << endl;
