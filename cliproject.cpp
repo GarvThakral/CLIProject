@@ -101,34 +101,41 @@ void createReact(vector<string> arguments){
         cin >> opt;
         lowerOp = tolower(opt);
         if(lowerOp == 'y'){
-            string execString = "cd " + projectName + " && npm install -D tailwindcss@latest postcss@latest autoprefixer@latest && npx tailwindcss init -p";
-            system(execString.c_str());
+            string installCmd = "cd " + projectName + " && npm install -D tailwindcss@3 postcss autoprefixer";
+            system(installCmd.c_str());
+
+            // Create a temporary package.json script to run tailwind init
+            string addScriptCmd = "cd " + projectName + " && npx tailwindcss init -p";
+            system(addScriptCmd.c_str());
+            
             ofstream of;
             of.open("./"+projectName+"/tailwind.config.js");
             if(!of){
                 cout  << "Error finding tailwind config" << endl;
             }else{
                 of << 
-                "/** @type {import('tailwindcss').Config} */"
-                "export default {"
-                    "content: ["
-                    "'./index.html',"
-                    "'./src/**/*.{js,ts,jsx,tsx}',"
-                    "],"
-                    "theme: {"
-                    "extend: {},"
-                    "},"
-                    "plugins: [],"
+                "/** @type {import('tailwindcss').Config} */\n"
+                "export default {\n"
+                "  content: [\n"
+                "    './index.html',\n"
+                "    './src/**/*.{js,ts,jsx,tsx}',\n"
+                "  ],\n"
+                "  theme: {\n"
+                "    extend: {},\n"
+                "  },\n"
+                "  plugins: [],\n"
                 "}";
             }
             of.close();
+
+
             of.open("./"+projectName+"/src/index.css");
             if(!of){
                 cout  << "Error finding tailwind config" << endl;
             }else{
                 of << 
-                "@tailwind base;"
-                "@tailwind components;"
+                "@tailwind base;\n"
+                "@tailwind components;\n"
                 "@tailwind utilities;";
             }
             of.close();
