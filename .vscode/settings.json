@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.dot": "dot",
+        "fstream": "cpp"
+    }
+}

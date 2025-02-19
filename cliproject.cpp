@@ -4,6 +4,8 @@
 #include <sstream>
 #include <string>
 #include <fstream>
+#include <filesystem>
+namespace fs = std::filesystem;
 using namespace std;
 
 void greet(vector<string> arguments){
@@ -56,8 +58,7 @@ void listFiles(vector<string> arguments){
 
 void help(vector<string> arguments){
     cout << endl << endl;
-    cout << "Heres how to use this Cli" << endl;
-    cout << endl;
+    cout << "Welcome to GarvCli" << endl;
     cout << "---------------------------------";
     cout << endl;
     cout << "greet arg" << "            --Say hello" << endl;
@@ -66,8 +67,10 @@ void help(vector<string> arguments){
     cout << "bolo text" << "            --Similar usage to the echo command" << endl;
     cout << "reactinit" << "            --Initialize a react project " << endl;
     cout << "reactinit -t" << "         --Initialize a react project with tailwind preconfigured" << endl;
+    cout << "expressinit" << "          --Initialize an express backend" << endl;
+    cout << "expressinit -l" << "       --Initialize an express backend along with widely used libraries" << endl;
     cout << "exit" << "                 --Exit the cli" << endl;
-    cout << endl << endl;
+    cout << endl ;
 }
 
 void createReact(vector<string> arguments){
@@ -155,6 +158,50 @@ void createReact(vector<string> arguments){
 
 }
 
+void createExpress(vector<string> arguments){
+    cout << "GarvCli >" << "Initializing backed ....";
+    string projectName; 
+    cout << "Enter project name : ";
+    cin >> projectName;
+    char op , lowerOp;
+    cout << "Do you want to use typescript ? (y/n)" << endl;
+    while(true){
+        cout << "GarvCli > ";
+        cin >> op;
+        lowerOp = tolower(op);
+        if(lowerOp == 'y'){
+            break;
+        }else if(lowerOp == 'n'){
+            break;
+        }else{
+            cout << "Incorrect option try again ....." << endl;
+        }
+    }
+    
+    if(lowerOp == 'y'){
+        string execString = "cd " + projectName + " && npm init -y && npm install typescript express jsonwebtoken bcrypt zod && npm pkg set scripts.build=\"npx tsc -b && node index.js\" " ;
+        system(execString.c_str());
+        execString = "cd " + projectName + "&& npx tsc --init";
+        cout << execString << endl;
+        system(execString.c_str());
+        ofstream {"./" + projectName + "/index.ts"};
+        ofstream file("./"+projectName+"/index.ts");
+        file << 
+        "import express from 'express'\n"
+        "const app = express()\n\n\n\n\n"
+        "app.listen(3000)\n";
+        file.close();
+    }else{
+        string execString = "cd " + projectName + " && npm init -y && npm install express jsonwebtoken bcrypt zod @types/express @types/jsonwebtoken @types/bcrypt && npm pkg set scripts.build=\"node index.js\" " ;
+        system(execString.c_str());
+        ofstream {"./" + projectName + "/index.js"};
+    }
+    cout << endl;
+    cout << "Run command : \n" ;
+    cout << "npm run build\n" << endl;
+}
+
+
 pair<string , vector<string>> parseInput(const string userInput){
     istringstream iss(userInput);
     string command;
@@ -180,9 +227,10 @@ int main(){
     map["filesDikhao"] = listFiles;
     map["Garv"] = help;
     map["reactinit"] = createReact;
+    map["expressinit"] = createExpress;
 
     while(true){
-        cout << "GarvCli > ";
+        cout << "GarvCli > " ;
         getline(cin , userInput);
         auto [command , arguments] = parseInput(userInput);
 
@@ -193,7 +241,6 @@ int main(){
         }
         
     }
-
     string input;
     cin >> input;
     system(input.c_str());
