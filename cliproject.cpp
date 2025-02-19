@@ -218,7 +218,7 @@ void gitpush(vector<string> arguments){
         commitMessage += arguments[i];
         commitMessage += " ";
     }
-    string execString = "git add . && git commit -m '" + commitMessage + "' && git push";
+    string execString = "git add . && git commit -m \"" + commitMessage + "\" && git push";
     cout << execString << endl;
     system(execString.c_str());
 }
