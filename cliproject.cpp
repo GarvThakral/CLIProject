@@ -5,6 +5,8 @@
 #include <string>
 #include <fstream>
 #include <filesystem>
+#include <ctime>
+
 namespace fs = std::filesystem;
 using namespace std;
 
@@ -61,17 +63,18 @@ void help(vector<string> arguments){
     cout << "Welcome to GarvCli" << endl;
     cout << "---------------------------------";
     cout << endl;
-    cout << "greet arg" << "                    --Say hello" << endl;
-    cout << "banao fileName" << "               --Create a new File" << endl;
-    cout << "hatao fileName" << "               --Remove a file" << endl;
-    cout << "bolo text" << "                    --Similar usage to the echo command" << endl;
-    cout << "reactinit" << "                    --Initialize a react project " << endl;
-    cout << "reactinit -t" << "                 --Initialize a react project with tailwind preconfigured" << endl;
-    cout << "expressinit" << "                  --Initialize an express backend" << endl;
-    cout << "expressinit -l" << "               --Initialize an express backend along with widely used libraries" << endl;
-    cout << "gitpush  -commit_message" << "     --Initialize an express backend along with widely used libraries" << endl;
-    cout << "exit" << "                         --Exit the cli" << endl;
-    cout << endl ;
+    cout << "greet arg" <<                     "--Say hello" << endl;
+    cout << "banao fileName" <<                "--Create a new File" << endl;
+    cout << "hatao fileName" <<                "--Remove a file" << endl;
+    cout << "bolo text" <<                     "--Similar usage to the echo command" << endl;
+    cout << "reactinit" <<                     "--Initialize a react project " << endl;
+    cout << "reactinit -t" <<                  "--Initialize a react project with tailwind preconfigured" << endl;
+    cout << "expressinit" <<                   "--Initialize an express backend" << endl;
+    cout << "expressinit -l" <<                "--Initialize an express backend along with widely used libraries" << endl;
+    cout << "gitpush  -commit_message" <<      "--Initialize an express backend along with widely used libraries" << endl;
+    cout << "clear" <<                         "--clear logs" << endl;
+    cout << "exit" <<                          "--Exit the cli" << endl;
+    cout << endl;
 }
 
 void createReact(vector<string> arguments){
@@ -223,6 +226,21 @@ void gitpush(vector<string> arguments){
     system(execString.c_str());
 }
 
+void clear(vector<string> arguments){
+    system("cls");
+};
+
+void datetime(vector<string> arguments){
+    time_t timestamp;
+    time(&timestamp);
+    
+    // Display the date and time represented by the timestamp
+    cout << "GarvCli > " <<  ctime(&timestamp);
+}
+
+void compileEXE(vector<string> arguments){
+    string execString = "g++ -static -static-libgcc -static-libstdc++ -o gex.exe cliproject.cpp";
+}
 
 pair<string , vector<string>> parseInput(const string userInput){
     istringstream iss(userInput);
@@ -251,6 +269,9 @@ int main(int argc, char* argv[]){
     map["reactinit"] = createReact;
     map["expressinit"] = createExpress;
     map["gitpush"] = gitpush;
+    map["clear"] = clear;
+    map["datetime"] = datetime;
+    map["compileEXE"] = compileEXE;
 
     if(argc > 1){
         string command = argv[1];
@@ -272,6 +293,7 @@ int main(int argc, char* argv[]){
         if(map.find(command) != map.end()){
             map[command](arguments);
         }else{
+            cout << "GarvCli > " ;
             cout << "Unknown command" << endl;
         }
         
