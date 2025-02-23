@@ -71,7 +71,7 @@ void help(vector<string> arguments){
     cout << "reactinit -t" <<                  "--Initialize a react project with tailwind preconfigured" << endl;
     cout << "expressinit" <<                   "--Initialize an express backend" << endl;
     cout << "expressinit -l" <<                "--Initialize an express backend along with widely used libraries" << endl;
-    cout << "gitpush  -commit_message" <<      "--Initialize an express backend along with widely used libraries" << endl;
+    cout << "gpush  -commit_message" <<        "--Initialize an express backend along with widely used libraries" << endl;
     cout << "clear" <<                         "--clear logs" << endl;
     cout << "exit" <<                          "--Exit the cli" << endl;
     cout << endl;
@@ -240,6 +240,11 @@ void datetime(vector<string> arguments){
 
 void compileEXE(vector<string> arguments){
     string execString = "g++ -static -static-libgcc -static-libstdc++ -o gex.exe cliproject.cpp";
+    system(execString.c_str());
+};
+
+void runDev(vector<string> arguments) {
+    system("bash -c \"npm run dev\"");
 }
 
 pair<string , vector<string>> parseInput(const string userInput){
@@ -268,10 +273,11 @@ int main(int argc, char* argv[]){
     map["Garv"] = help;
     map["reactinit"] = createReact;
     map["expressinit"] = createExpress;
-    map["gitpush"] = gitpush;
+    map["gpush"] = gitpush;
     map["clear"] = clear;
     map["datetime"] = datetime;
     map["compileEXE"] = compileEXE;
+    map["nd"] = runDev;
 
     if(argc > 1){
         string command = argv[1];
@@ -281,6 +287,7 @@ int main(int argc, char* argv[]){
         }
         if(map.find(command) != map.end()){
             map[command](arguments);
+            return 0;
         }else{
             cout << "Unknown command" << endl;
         }
