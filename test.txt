@@ -1,0 +1,1 @@
+g++ -std=c++17 cliproject.cpp -o cliproject -lstdc++fs -static && ./cliproject

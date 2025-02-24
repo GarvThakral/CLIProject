@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "*.dot": "dot",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "iostream": "cpp",
+        "iosfwd": "cpp"
     }
 }

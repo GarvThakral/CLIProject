@@ -6,6 +6,12 @@
 #include <fstream>
 #include <filesystem>
 #include <ctime>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <typeinfo>
+#include <limits>
+#include <system_error>
 
 namespace fs = std::filesystem;
 using namespace std;
@@ -23,9 +29,11 @@ void help(vector<string> arguments){
     cout << "rinit -t" <<"                      --Initialize a react project with tailwind preconfigured" << endl;
     cout << "einit" <<"                         --Initialize an express backend" << endl;
     cout << "einit -l" <<"                      --Initialize an express backend along with widely used libraries" << endl;
+    cout << "gclone --url" <<"                  --Clone a github repository , install dependencies and setup the environment" << endl;
     cout << "gpush  -commit_message" <<"        --Initialize an express backend along with widely used libraries" << endl;
     cout << "nd" <<"                            --alias for the command npm run dev" << endl;
     cout << "compileEXE" <<"                    --compile the exe with libraries embedded in it for all device compatability" << endl;
+    cout << "backup" <<"                        --backup the current project directory" << endl;
     cout << "datetime" <<"                      --view the current date and time" << endl;
     cout << "clear" <<"                         --clear logs" << endl;
     cout << "exit" <<"                          --Exit the cli" << endl;
@@ -250,6 +258,47 @@ void runDev(vector<string> arguments) {
     system("bash -c \"npm run dev\"");
 }
 
+void gclone(vector<string> arguments){
+
+}
+
+void backup(vector<string> arguments) {    
+    string dirName;
+    bool exists = true;
+
+    while (exists) {
+        cout << "GarvCli > Enter the name of the new directory: ";
+        getline(cin, dirName);
+        exists = fs::exists(dirName);
+        if (exists) {
+            cout << "GarvCli > This folder already exists" << endl;
+        } else {
+            fs::create_directory(dirName);
+            exists = false;
+
+            for (const auto& x : fs::directory_iterator(fs::current_path())) {
+                if (x.path().filename() != dirName) {                      try {
+                        fs::path destination = dirName / x.path().filename();
+
+                        if (fs::exists(destination)) {
+                            cout << "Skipping " << destination << " because it already exists." << endl;
+                            continue;
+                        }
+                        if (fs::is_directory(x)) {
+                            fs::copy(x, destination, fs::copy_options::recursive | fs::copy_options::overwrite_existing);
+                        } else {
+                            fs::copy(x, destination, fs::copy_options::overwrite_existing);
+                        }
+
+                    } catch (const std::exception& e) {
+                        cout << "Error copying " << x.path() << ": " << e.what() << endl;
+                    }
+                }
+            }
+        }
+    }
+}
+
 pair<string , vector<string>> parseInput(const string userInput){
     istringstream iss(userInput);
     string command;
@@ -280,7 +329,9 @@ int main(int argc, char* argv[]){
     map["clear"] = clear;
     map["datetime"] = datetime;
     map["compileEXE"] = compileEXE;
+    map["backup"] = backup;
     map["nd"] = runDev;
+    map["gclone"] = gclone;
 
     if(argc > 1){
         string command = argv[1];
