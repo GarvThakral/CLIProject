@@ -258,8 +258,8 @@ void runDev(vector<string> arguments) {
     system("bash -c \"npm run dev\"");
 }
 
-void gclone(vector<string> arguments){
-
+void clean(vector<string> arguments){
+    bool node_exist;
 }
 
 void backup(vector<string> arguments) {    
@@ -331,7 +331,7 @@ int main(int argc, char* argv[]){
     map["compileEXE"] = compileEXE;
     map["backup"] = backup;
     map["nd"] = runDev;
-    map["gclone"] = gclone;
+    map["clean"] = clean;
 
     if(argc > 1){
         string command = argv[1];
