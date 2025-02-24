@@ -304,6 +304,26 @@ void backup(vector<string> arguments) {
     }
 }
 
+void createCommandFile(vector<string> arguments){
+    string commandName = arguments[0];
+    string fileName = commandName + ".bat";
+    ofstream out1("C:\\GarvCli\\bin\\" + fileName);
+    if(out1.is_open()){
+        out1 << "@echo off\n";
+        out1 << "set scriptdir=%~dp0\n";
+        out1 << "\"%scriptdir%gex.exe\" nd %*\n";
+    }
+    
+    out1.close();
+
+    ofstream out("C:\\GarvCli\\bin\\" + commandName);
+    if(out.is_open()){
+        out << "#!/bin/bash\n";
+        out << "$(dirname \"$0\")/Gex.exe\n" + commandName + "\"$@\"";
+    }
+    out.close();
+}
+
 pair<string , vector<string>> parseInput(const string userInput){
     istringstream iss(userInput);
     string command;
@@ -335,6 +355,7 @@ int main(int argc, char* argv[]){
     map["datetime"] = datetime;
     map["compileEXE"] = compileEXE;
     map["backup"] = backup;
+    map["create"] = createCommandFile;
     map["nd"] = runDev;
     map["clean"] = clean;
 
