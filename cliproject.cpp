@@ -10,6 +10,28 @@
 namespace fs = std::filesystem;
 using namespace std;
 
+void help(vector<string> arguments){
+    cout << endl << endl;
+    cout << "Welcome to GarvCli" << endl;
+    cout << "---------------------------------";
+    cout << endl;
+    cout << "greet arg" <<"                     --Say hello" << endl;
+    cout << "banao fileName" <<"                --Create a new File" << endl;
+    cout << "hatao fileName" <<"                --Remove a file" << endl;
+    cout << "bolo text" <<"                     --Similar usage to the echo command" << endl;
+    cout << "rinit" <<"                         --Initialize a react project " << endl;
+    cout << "rinit -t" <<"                      --Initialize a react project with tailwind preconfigured" << endl;
+    cout << "einit" <<"                         --Initialize an express backend" << endl;
+    cout << "einit -l" <<"                      --Initialize an express backend along with widely used libraries" << endl;
+    cout << "gpush  -commit_message" <<"        --Initialize an express backend along with widely used libraries" << endl;
+    cout << "nd" <<"                            --alias for the command npm run dev" << endl;
+    cout << "compileEXE" <<"                    --compile the exe with libraries embedded in it for all device compatability" << endl;
+    cout << "datetime" <<"                      --view the current date and time" << endl;
+    cout << "clear" <<"                         --clear logs" << endl;
+    cout << "exit" <<"                          --Exit the cli" << endl;
+    cout << endl;
+}
+
 void greet(vector<string> arguments){
     cout << "GarvCli > ";
     cout << "Hello " << arguments[0] << "!" <<  endl;
@@ -56,25 +78,6 @@ void repeat(vector<string> arguments){
 void listFiles(vector<string> arguments){
     string input = "dir";
     system(input.c_str());
-}
-
-void help(vector<string> arguments){
-    cout << endl << endl;
-    cout << "Welcome to GarvCli" << endl;
-    cout << "---------------------------------";
-    cout << endl;
-    cout << "greet arg" <<                     "--Say hello" << endl;
-    cout << "banao fileName" <<                "--Create a new File" << endl;
-    cout << "hatao fileName" <<                "--Remove a file" << endl;
-    cout << "bolo text" <<                     "--Similar usage to the echo command" << endl;
-    cout << "reactinit" <<                     "--Initialize a react project " << endl;
-    cout << "reactinit -t" <<                  "--Initialize a react project with tailwind preconfigured" << endl;
-    cout << "expressinit" <<                   "--Initialize an express backend" << endl;
-    cout << "expressinit -l" <<                "--Initialize an express backend along with widely used libraries" << endl;
-    cout << "gpush  -commit_message" <<        "--Initialize an express backend along with widely used libraries" << endl;
-    cout << "clear" <<                         "--clear logs" << endl;
-    cout << "exit" <<                          "--Exit the cli" << endl;
-    cout << endl;
 }
 
 void createReact(vector<string> arguments){
@@ -271,8 +274,8 @@ int main(int argc, char* argv[]){
     map["bolo"] = repeat;
     map["filesDikhao"] = listFiles;
     map["Garv"] = help;
-    map["reactinit"] = createReact;
-    map["expressinit"] = createExpress;
+    map["rinit"] = createReact;
+    map["einit"] = createExpress;
     map["gpush"] = gitpush;
     map["clear"] = clear;
     map["datetime"] = datetime;
