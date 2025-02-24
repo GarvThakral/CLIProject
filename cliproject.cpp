@@ -259,7 +259,12 @@ void runDev(vector<string> arguments) {
 }
 
 void clean(vector<string> arguments){
-    bool node_exist;
+    vector<string> dirVec = {"node_modules" , "dist" , ".vite" , ".turbo" , ".next" , "package-lock.json"};
+    for(int i = 0 ; i < dirVec.size() ; i++ ){
+        bool node_exist = fs::exists(dirVec[i]);
+        fs::path destination = fs::current_path().string() + "\\" + dirVec[i];
+        remove(destination);
+    }
 }
 
 void backup(vector<string> arguments) {    
