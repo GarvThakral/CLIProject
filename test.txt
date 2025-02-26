@@ -1,1 +1,3 @@
 g++ -std=c++17 cliproject.cpp -o cliproject -lstdc++fs -static && ./cliproject
+
+g++ -static -static-libgcc -static-libstdc++ -std=c++17 cliproject.cpp -o gex -lstdc++fs -static 

@@ -238,7 +238,10 @@ void gitpush(vector<string> arguments){
 }
 
 void clear(vector<string> arguments){
-    system("cls");
+    #ifdef _WIN32 
+        system("cls");
+    #endif
+        system("clear");
 };
 
 void datetime(vector<string> arguments){
@@ -250,7 +253,7 @@ void datetime(vector<string> arguments){
 }
 
 void compileEXE(vector<string> arguments){
-    string execString = "g++ -static -static-libgcc -static-libstdc++ -o gex.exe cliproject.cpp";
+    string execString = "g++ -static -static-libgcc -static-libstdc++ -std=c++17 cliproject.cpp -o C:\\GarvCli\\bin\\gex -O2 -Wall -Wextra";
     system(execString.c_str());
 };
 
@@ -305,23 +308,42 @@ void backup(vector<string> arguments) {
 }
 
 void createCommandFile(vector<string> arguments){
-    string commandName = arguments[0];
-    string fileName = commandName + ".bat";
-    ofstream out1("C:\\GarvCli\\bin\\" + fileName);
-    if(out1.is_open()){
-        out1 << "@echo off\n";
-        out1 << "set scriptdir=%~dp0\n";
-        out1 << "\"%scriptdir%gex.exe\" nd %*\n";
+    if(arguments.size() == 0){
+        cout << "GarvCli > Arguments are required to run this command" << endl;
+        return;
     }
+    for(int i = 0 ; i < arguments.size() ;i++){
+        string commandName = arguments[i];
+        string fileName = commandName + ".bat";
+        ofstream out1("C:\\GarvCli\\bin\\" + fileName);
+        if(out1.is_open()){
+            out1 << "@echo off\n";
+            out1 << "set scriptdir=%~dp0\n";
+            out1 << "\"%scriptdir%gex.exe\" "+ commandName +" %*\n";
+        }
+        
+        out1.close();
     
-    out1.close();
-
-    ofstream out("C:\\GarvCli\\bin\\" + commandName);
-    if(out.is_open()){
-        out << "#!/bin/bash\n";
-        out << "$(dirname \"$0\")/Gex.exe\n" + commandName + "\"$@\"";
+        ofstream out("C:\\GarvCli\\bin\\" + commandName);
+        if(out.is_open()){
+            out << "#!/bin/bash\n";
+            out << "$(dirname \"$0\")/gex.exe " + commandName + " \"$@\"\n";
+        }
+        out.close();
     }
-    out.close();
+}
+
+void runCFile(vector<string> arguments){
+    if(arguments.size() == 0){
+        cout << "GarvCli > File name not specified" <<endl;
+    }else{
+        string execString;
+        #ifdef _WIN32
+            execString = "g++ "+arguments[0]+".cpp -o "+arguments[0]+" ; "+arguments[0];
+        #endif
+            execString = "g++ "+arguments[0]+".cpp -o "+arguments[0]+" && "+arguments[0];
+        system(execString.c_str());
+    }
 }
 
 pair<string , vector<string>> parseInput(const string userInput){
@@ -339,7 +361,6 @@ pair<string , vector<string>> parseInput(const string userInput){
 
 int main(int argc, char* argv[]){
     string userInput;
-    cout << "Type Garv for help > " << endl;
     unordered_map<string , void(*)(vector<string> arguments)> map;
     map["greet"] = greet;
     map["exit"] = exit;
@@ -356,6 +377,7 @@ int main(int argc, char* argv[]){
     map["compileEXE"] = compileEXE;
     map["backup"] = backup;
     map["create"] = createCommandFile;
+    map["crun"] = runCFile;
     map["nd"] = runDev;
     map["clean"] = clean;
 
