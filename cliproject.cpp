@@ -346,6 +346,31 @@ void runCFile(vector<string> arguments){
     }
 }
 
+string detectProjectType(){
+    bool nodeProject = fs::exists("package.json");
+    bool pythonProject = fs::exists("requirements.txt");
+    if(nodeProject){
+        return "Node";
+    }else if(pythonProject){
+        return "Python";
+    }else{
+        return "Unidentified";
+    }
+}
+
+void checkDeps(vector<string> arguments){
+    string projectType = detectProjectType();
+    if(projectType == "Node"){
+        cout << "GarvCli > " << "Node project detected , running appropriate checks ....." << endl;
+        system("npm outdated");
+        system("npm audit");
+    }else if(projectType == "Python"){
+        system("pip list --outdated");
+    }else{
+        cout << "Invalid project or support not available in this version " << endl;
+    }
+}
+
 pair<string , vector<string>> parseInput(const string userInput){
     istringstream iss(userInput);
     string command;
@@ -380,6 +405,7 @@ int main(int argc, char* argv[]){
     map["crun"] = runCFile;
     map["nd"] = runDev;
     map["clean"] = clean;
+    map["deps-check"] = checkDeps;
 
     if(argc > 1){
         string command = argv[1];
