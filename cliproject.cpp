@@ -365,7 +365,24 @@ void checkDeps(vector<string> arguments){
         system("npm outdated");
         system("npm audit");
     }else if(projectType == "Python"){
+        cout << "GarvCli > " << "Python project detected , running appropriate checks ....." << endl;
         system("pip list --outdated");
+    }else{
+        cout << "Invalid project or support not available in this version " << endl;
+    }
+}
+
+void updateDeps(vector<string> arguments){
+    string type = detectProjectType();
+    if(type == "Node"){
+        cout << "GarvCli > " << "Node project detected updating dependencies in package.json ....." << endl;
+        system("npm update");
+    }else if(type == "Python"){
+        if(system("pip show pip-upgrader") == 0){
+            cout << "GarvCli > " << "Python project detected updating dependencies in requirements.txt ....." << endl;
+            system("pip install pip-upgrader");
+            system("pip-upgrade --skip-virtualenv-check");
+        }
     }else{
         cout << "Invalid project or support not available in this version " << endl;
     }
