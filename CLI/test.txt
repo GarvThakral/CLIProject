@@ -1,0 +1,4 @@
+g++ -std=c++17 cliproject.cpp -o cliproject -lstdc++fs -static && ./cliproject  MAIn
+$ g++ -std=c++17 cliproject.cpp -I. -L. -lsqlite3 -o cliproject -lstdc++fs -static && ./cliproject WWITH DB
+
+g++ -static -static-libgcc -static-libstdc++ -std=c++17 cliproject.cpp -o gex -lstdc++fs -static 
