@@ -432,32 +432,44 @@ void setAlias(vector<string> arguments){
     char *zErrMsg = 0;
     int rc;
     rc = sqlite3_open("test.db", &db);
-    char *sql = "CREATE TABLE IF NOT EXISTS Aliases("  \
-        "ID INT PRIMARY KEY AUTOINCREMENT," \
-        "NAME           TEXT    NOT NULL," \
-        "COMMAND        CHAR(50)     NOT NULL)";
+    const char *createTableSQL = "CREATE TABLE IF NOT EXISTS Aliases (" \
+    "ID INTEGER PRIMARY KEY AUTOINCREMENT, " \
+    "NAME TEXT NOT NULL, " \
+    "COMMAND CHAR(50) NOT NULL);";
 
-    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-    string aliasCommand;
-    while(1){
-        cout << "Pass command > ";
-        getline(cin , aliasCommand);
-        if(aliasCommand != ""){
-            break;
-        }else{
-            continue;
-        }
+    rc = sqlite3_exec(db, createTableSQL, callback, 0, &zErrMsg);
+    if (rc != SQLITE_OK) {
+    cout << "SQL error: " << zErrMsg << endl;
+    sqlite3_free(zErrMsg);
     }
+
+    string aliasCommand;
+    while (true) {
+    cout << "Pass command > ";
+    getline(cin, aliasCommand);
+    if (!aliasCommand.empty()) {
+    break;
+    }
+    }
+
+
+    // Safely format the SQL query using sqlite3_mprintf
     char *sqlInsert = sqlite3_mprintf("INSERT INTO Aliases (NAME, COMMAND) VALUES ('%s', '%s')", arguments[0].c_str(), aliasCommand.c_str());
+
+    // Debugging: Print the SQL query
     cout << sqlInsert << endl;
+
+    // Execute the insert query
     rc = sqlite3_exec(db, sqlInsert, callback, 0, &zErrMsg);
     if (rc != SQLITE_OK) {
-        cout << "SQL error: " << zErrMsg << endl;
-        sqlite3_free(zErrMsg);
+    cout << "SQL error: " << zErrMsg << endl;
+    sqlite3_free(zErrMsg);
     }
 
     sqlite3_free(sqlInsert);
     sqlite3_close(db);
+
+    return ;
 }
 
 pair<string , vector<string>> parseInput(const string userInput){
