@@ -13,7 +13,7 @@
 #include <limits>
 #include <system_error>
 #include <chrono>
-#include <sqlite3.h> 
+// #include <sqlite3.h> 
 
 namespace fs = std::filesystem;
 using namespace std;
@@ -335,6 +335,43 @@ void createCommandFile(vector<string> arguments){
     }
 }
 
+void ml_init(vector<string> arguments){
+    if(arguments.size() == 0){
+        cout << "GarvCli > ml-init project1 3.11 scikit-learn lab" << endl;
+        cout << "GarvCli > ml-init <env_name> <version> <specific-libraries>" << endl;
+    }
+    double version = stod(arguments[1]);
+    std::string str = std::to_string (version);
+    str.erase ( str.find_last_not_of('0') + 1, std::string::npos );
+    str.erase ( str.find_last_not_of('.') + 1, std::string::npos );
+    if(!(version < 4.00)){
+        cout << "GarvCli > Invalid python version" << endl;
+    } 
+    string libraries = "";
+    if(arguments.size() > 2){
+        if(arguments.size() >= 3){
+            for(int i = 2 ; i < arguments.size() ;i++){
+                libraries += (arguments[i] + " ");
+            }
+            libraries+= "jupyterlab";
+        }
+    }
+    string command = "conda create -n " + arguments[0]  + " python=" + str + " -y" ;
+    system(command.c_str());
+    
+    string activate = "conda activate " + arguments[0];
+    system(command.c_str());
+    
+    if(libraries.size() > 0){
+        string install = "conda install " + libraries + " -y";
+        system(install.c_str());
+        
+    }
+        
+    
+}
+
+
 void runCFile(vector<string> arguments){
     if(arguments.size() == 0){
         cout << "GarvCli > File name not specified" <<endl;
@@ -423,54 +460,49 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
     return 0;
 }
 
-void setAlias(vector<string> arguments){
-    if(arguments.size() == 0){
-        cout << "Pass the alias as an argument" << endl;
-        return;
-    }
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-    rc = sqlite3_open("test.db", &db);
-    const char *createTableSQL = "CREATE TABLE IF NOT EXISTS Aliases (" \
-    "ID INTEGER PRIMARY KEY AUTOINCREMENT, " \
-    "NAME TEXT NOT NULL, " \
-    "COMMAND CHAR(50) NOT NULL);";
+// void setAlias(vector<string> arguments){
+//     if(arguments.size() == 0){
+//         cout << "Pass the alias as an argument" << endl;
+//         return;
+//     }
+//     sqlite3 *db;
+//     char *zErrMsg = 0;
+//     int rc;
+//     rc = sqlite3_open("test.db", &db);
+//     const char *createTableSQL = "CREATE TABLE IF NOT EXISTS Aliases (" \
+//     "ID INTEGER PRIMARY KEY AUTOINCREMENT, " \
+//     "NAME TEXT NOT NULL, " \
+//     "COMMAND CHAR(50) NOT NULL);";
 
-    rc = sqlite3_exec(db, createTableSQL, callback, 0, &zErrMsg);
-    if (rc != SQLITE_OK) {
-    cout << "SQL error: " << zErrMsg << endl;
-    sqlite3_free(zErrMsg);
-    }
+//     rc = sqlite3_exec(db, createTableSQL, callback, 0, &zErrMsg);
+//     if (rc != SQLITE_OK) {
+//     cout << "SQL error: " << zErrMsg << endl;
+//     sqlite3_free(zErrMsg);
+//     }
 
-    string aliasCommand;
-    while (true) {
-    cout << "Pass command > ";
-    getline(cin, aliasCommand);
-    if (!aliasCommand.empty()) {
-    break;
-    }
-    }
+//     string aliasCommand;
+//     while (true) {
+//     cout << "Pass command > ";
+//     getline(cin, aliasCommand);
+//     if (!aliasCommand.empty()) {
+//     break;
+//     }
+//     }
+//     char *sqlInsert = sqlite3_mprintf("INSERT INTO Aliases (NAME, COMMAND) VALUES ('%s', '%s')", arguments[0].c_str(), aliasCommand.c_str());
 
+//     cout << sqlInsert << endl;
 
-    // Safely format the SQL query using sqlite3_mprintf
-    char *sqlInsert = sqlite3_mprintf("INSERT INTO Aliases (NAME, COMMAND) VALUES ('%s', '%s')", arguments[0].c_str(), aliasCommand.c_str());
+//     rc = sqlite3_exec(db, sqlInsert, callback, 0, &zErrMsg);
+//     if (rc != SQLITE_OK) {
+//     cout << "SQL error: " << zErrMsg << endl;
+//     sqlite3_free(zErrMsg);
+//     }
 
-    // Debugging: Print the SQL query
-    cout << sqlInsert << endl;
+//     sqlite3_free(sqlInsert);
+//     sqlite3_close(db);
 
-    // Execute the insert query
-    rc = sqlite3_exec(db, sqlInsert, callback, 0, &zErrMsg);
-    if (rc != SQLITE_OK) {
-    cout << "SQL error: " << zErrMsg << endl;
-    sqlite3_free(zErrMsg);
-    }
-
-    sqlite3_free(sqlInsert);
-    sqlite3_close(db);
-
-    return ;
-}
+//     return ;
+// }
 
 pair<string , vector<string>> parseInput(const string userInput){
     istringstream iss(userInput);
@@ -509,7 +541,8 @@ int main(int argc, char* argv[]){
     map["clean"] = clean;
     map["deps-check"] = checkDeps;
     map["benchmark"] = benchmark;
-    map["setAlias"] = setAlias;
+    map["ml-init"] = ml_init;
+    // map["setAlias"] = setAlias;
 
     if(argc > 1){
         string command = argv[1];
@@ -521,6 +554,12 @@ int main(int argc, char* argv[]){
             map[command](arguments);
             return 0;
         }else{
+            // sqlite3 *db;
+            // char *zErrMsg = 0;
+            // int rc;
+            // rc = sqlite3_open("test.db", &db);
+            // char *sqlInsert = sqlite3_mprintf("SELECT Name FROM Aliases");
+            
             cout << "Unknown command" << endl;
         }
     }
