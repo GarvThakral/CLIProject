@@ -81,7 +81,7 @@ If you distribute a build through S3, include install steps for users to fetch a
 
 **Linux example:**
 ```bash
-curl -L -o garvcli-linux.tar.gz "https://your-bucket.s3.amazonaws.com/garvcli-linux-x64.tar.gz"
+curl -L -o garvcli-linux.tar.gz "https://bucket-main-garv.s3.us-east-1.amazonaws.com/dex"
 tar -xzf garvcli-linux.tar.gz
 cd garvcli
 ./gex
